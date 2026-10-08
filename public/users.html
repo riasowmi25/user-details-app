@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Saved Users</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>👥 Saved Users</h1>
+
+        <div id="usersContainer">
+            Loading users...
+        </div>
+
+        <br>
+
+        <button onclick="window.location.href='/'">
+            ⬅️ Back to Form
+        </button>
+
+    </div>
+
+    <script>
+
+        async function loadUsers() {
+
+            try {
+
+                const response = await fetch("/api/users");
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch users");
+                }
+
+                const users = await response.json();
+
+                const container = document.getElementById("usersContainer");
+
+                if (users.length === 0) {
+                    container.innerHTML = "<p>No users found.</p>";
+                    return;
+                }
+
+                let table = `
+                    <table border="1" cellpadding="10" cellspacing="0">
+
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>DOB</th>
+                                <th>Gender</th>
+                                <th>Blood Group</th>
+                                <th>City</th>
+                                <th>State</th>
+                                <th>Pincode</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                `;
+
+                users.forEach(user => {
+
+                    table += `
+                        <tr>
+                            <td>${user.id}</td>
+                            <td>${user.full_name}</td>
+                            <td>${user.email}</td>
+                            <td>${user.phone}</td>
+                            <td>${user.dob}</td>
+                            <td>${user.gender}</td>
+                            <td>${user.blood_group}</td>
+                            <td>${user.city}</td>
+                            <td>${user.state}</td>
+                            <td>${user.pincode}</td>
+                        </tr>
+                    `;
+
+                });
+
+                table += `
+                        </tbody>
+                    </table>
+                `;
+
+                container.innerHTML = table;
+
+            } catch (error) {
+
+                console.error(error);
+
+                document.getElementById("usersContainer").innerHTML =
+                    "<p>Unable to load users.</p>";
+
+            }
+        }
+
+        loadUsers();
+
+    </script>
+
+</body>
+
+</html>
